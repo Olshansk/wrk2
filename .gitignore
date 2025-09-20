@@ -6,3 +6,5 @@ deps/*
 
 .idea
 CMakeLists.txt
+
+obj

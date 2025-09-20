@@ -1,13 +1,13 @@
 # wrk2
 
-> ![Note]
+> [!NOTE]
 > This is a fork of [wrk2](https://github.com/giltene/wrk2) that works on macOS and has a better README.
 
 ## QuickStart
 
 _tl;dr `wrk2` is a constant throughput, correct latency recording variant of `wrk`_
 
-It is similar to `wrk` with an additional argument of `-R` which helps the user to specify the constant load that they want to generate on the API.
+> It is similar to `wrk` with an additional argument of `-R` which helps the user to specify the constant load that they want to generate on the API.
 
 ### MacOS
 
@@ -90,7 +90,9 @@ processing, and custom reporting. Several example scripts are located in
 
 ## Basic Usage
 
-    wrk -t2 -c100 -d30s -R2000 http://127.0.0.1:8080/index.html
+```bash
+wrk -t2 -c100 -d30s -R2000 http://127.0.0.1:8080/index.html
+```
 
 This runs a benchmark for 30 seconds, using 2 threads, keeping
 100 HTTP connections open, and a constant throughput of 2000 requests
@@ -118,9 +120,14 @@ detailed latency percentile information (in a format that can be easily
 imported to spreadsheets or gnuplot scripts and plotted per examples
 provided at http://hdrhistogram.org):
 
+```bash
     wrk -t2 -c100 -d30s -R2000 --latency http://127.0.0.1:80/index.html
+```
 
 Output:
+
+<details>
+<summary>Running 30s test @ http://127.0.0.1:80/index.html</summary>
 
     Running 30s test @ http://127.0.0.1:80/index.html
       2 threads and 100 connections
@@ -228,6 +235,8 @@ Output:
     60018 requests in 30.00s, 19.81MB read
     Requests/sec:   2000.28
     Transfer/sec:    676.18KB
+
+</details>
 
 ## Scripting
 
@@ -397,13 +406,15 @@ Omission.
 
 ---
 
----
+**Example 1: [short, non-noisy run (~11msec worst observed latency)]:**
 
-Example 1: [short, non-noisy run (~11msec worst observed latency)]:
+```bash
+wrk -t2 -c100 -d30s -R2000 --u_latency http://127.0.0.1:80/index.html
+```
 
-    wrk -t2 -c100 -d30s -R2000 --u_latency http://127.0.0.1:80/index.html
+<details>
+<summary>Running 30s test @ http://127.0.0.1:80/index.html</summary>
 
-    Running 30s test @ http://127.0.0.1:80/index.html
       2 threads and 100 connections
       Thread calibration: mean lat.: 9319 usec, rate sampling interval: 21 msec
       Thread calibration: mean lat.: 9332 usec, rate sampling interval: 21 msec
@@ -607,15 +618,19 @@ Example 1: [short, non-noisy run (~11msec worst observed latency)]:
     Requests/sec:   2000.67
     Transfer/sec:    676.32KB
 
----
+</details>
 
 ---
 
-Example 2: [1.4 second ^Z artifact introduced on the httpd server]:
+**Example 2: [1.4 second ^Z artifact introduced on the httpd server]:**
 
-    wrk -t2 -c100 -d30s -R2000 --u_latency http://127.0.0.1:80/index.html
+```bash
+wrk -t2 -c100 -d30s -R2000 --u_latency http://127.0.0.1:80/index.html
+```
 
-    Running 30s test @ http://127.0.0.1:80/index.html
+<details>
+<summary>Running 30s test @ http://127.0.0.1:80/index.html</summary>
+
       2 threads and 100 connections
       Thread calibration: mean lat.: 108237 usec, rate sampling interval: 1021 msec
       Thread calibration: mean lat.: 108178 usec, rate sampling interval: 1021 msec
@@ -753,5 +768,7 @@ Example 2: [1.4 second ^Z artifact introduced on the httpd server]:
       60055 requests in 30.01s, 19.83MB read
     Requests/sec:   2001.42
     Transfer/sec:    676.57KB
+
+</details>
 
 [CO example]: https://raw.github.com/giltene/wrk2/master/CoordinatedOmission/wrk2_CleanVsCO.png "Coordinated Omission example"
