@@ -12,8 +12,8 @@ _tl;dr `wrk2` is a constant throughput, correct latency recording variant of `wr
 ### MacOS
 
 ```bash
-brew tap jabley/homebrew-wrk2
-brew install --HEAD wrk2
+brew tap Olshansk/wrk2 https://github.com/Olshansk/wrk2
+brew install --HEAD olshansk/wrk2/wrk2
 ```
 
 ### Linux
@@ -21,7 +21,7 @@ brew install --HEAD wrk2
 ```bash
 sudo apt-get update
 sudo apt-get install -y build-essential libssl-dev git zlib1g-dev
-git clone https://github.com/giltene/wrk2.git
+git clone https://github.com/Olshansk/wrk2.git
 cd wrk2
 make
 # move the executable to somewhere in your PATH
