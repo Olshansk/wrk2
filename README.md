@@ -28,9 +28,14 @@ make
 sudo cp wrk /usr/local/bin
 ```
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Olshansk/wrk2&type=Date)](https://www.star-history.com/#Olshansk/wrk2&Date)
+
 ## Background & Motivation
 
-**A HTTP benchmarking tool based mostly on wrk**
+<details>
+<summary>**A HTTP benchmarking tool based mostly on wrk**</summary>
 
 wrk2 is wrk modifed to produce a constant throughput load, and
 accurate latency details to the high 9s (i.e. can produce
@@ -87,6 +92,8 @@ epoll and kqueue.
 An optional LuaJIT script can perform HTTP request generation, response
 processing, and custom reporting. Several example scripts are located in
 `scripts/`.
+
+</details>
 
 ## Basic Usage
 
@@ -327,10 +334,11 @@ the NOTICE file for licensing details.
 
 ---
 
-A note about wrk2's latency measurement technique:
+## A note about wrk2's latency measurement technique:
 
-One of wrk2's main modification to wrk's current (Nov. 2014) measurement
-model has to do with how request latency is computed and recorded.
+<details>
+<summary>One of wrk2's main modification to wrk's current (Nov. 2014) measurement
+model has to do with how request latency is computed and recorded.</summary>
 
 wrk's model, which is similar to the model found in many current load
 generators, computes the latency for a given request as the time from
@@ -403,6 +411,8 @@ reported percentiles in the two measurement techniques, with wrk2's latency
 report [correctly] reporting a 99%'ile that is 200x (!!!) larger than that
 of the traditional measurement technique that was susceptible to Coordinated
 Omission.
+
+</details>
 
 ---
 
