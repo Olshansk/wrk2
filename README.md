@@ -1,63 +1,90 @@
 # wrk2
 [![Build Status](https://travis-ci.com/giltene/wrk2.svg?branch=master)](https://travis-ci.com/giltene/wrk2) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/giltene/wrk2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-  **a HTTP benchmarking tool based mostly on wrk**
+## QuickStart
 
-  wrk2 is wrk modifed to produce a constant throughput load, and
-  accurate latency details to the high 9s (i.e. can produce
-  accurate 99.9999%'ile when run long enough). In addition to
-  wrk's arguments, wrk2 takes a throughput argument (in total requests
-  per second) via either the --rate or -R parameters (default
-  is 1000).
+_tl;dr `wrk2` is a constant throughput, correct latency recording variant of `wrk`_
 
-  CRITICAL NOTE: Before going farther, I'd like to make it clear that
-  this work is in no way intended to be an attack on or a disparagement
-  of the great work that Will Glozer has done with wrk. I enjoyed working
-  with his code, and I sincerely hope that some of the changes I had made
-  might be considered for inclusion back into wrk. As those of you who may
-  be familiar with my latency related talks and rants, the latency
-  measurement issues that I focused on fixing with wrk2 are extremely
-  common in load generators and in monitoring code. I do not
-  ascribe any lack of skill or intelligence to people who's creations
-  repeat them. I was once (as recently as 2-3 years ago) just as
-  oblivious to the effects of Coordinated Omission as the rest of
-  the world still is.
+It is similar to `wrk` with an additional argument of `-R` which helps the user to specify the constant load that they want to generate on the API.
 
-  wrk2 replaces wrk's individual request sample buffers with
-  HdrHistograms. wrk2 maintains wrk's Lua API, including it's
-  presentation of the stats objects (latency and requests). The stats
-  objects are "emulated" using HdrHistograms. E.g. a request for a
-  raw sample value at index i (see latency[i] below) will return
-  the value at the associated percentile (100.0 * i / __len).
+### MacOS
 
-  As a result of using HdrHistograms for full (lossless) recording,
-  constant throughput load generation, and accurate tracking of
-  response latency (from the point in time where a request was supposed
-  to be sent per the "plan" to the time that it actually arrived), wrk2's
-  latency reporting is significantly more accurate (as in "correct") than
-  that of wrk's current (Nov. 2014) execution model.
+```bash
+brew tap jabley/homebrew-wrk2
+brew install --HEAD wrk2
+```
 
-  It is important to note that in wrk2's current constant-throughput
-  implementation, measured latencies are [only] accurate to a +/- ~1 msec
-  granularity, due to OS sleep time behavior.
+### Linux
 
-  wrk2 is currently in experimental/development mode, and may well be
-  merged into wrk in the future if others see fit to adopt it's changes.
+```bash
+sudo apt-get update
+sudo apt-get install -y build-essential libssl-dev git zlib1g-dev
+git clone https://github.com/giltene/wrk2.git
+cd wrk2
+make
+# move the executable to somewhere in your PATH
+sudo cp wrk /usr/local/bin
+```
 
-  The remaining part of the README is wrk's, with minor changes to
-  reflect additional parameter and output. There is an important and
-  detailed note at the end about about wrk2's latency measurement
-  technique, including a discussion of Coordinated Omission, how
-  wrk2 avoids it, and detailed output that demonstrates it.
+## Background & Motivation
 
-  wrk2 (as is wrk) is a modern HTTP benchmarking tool capable of generating
-  significant load when run on a single multi-core CPU. It combines a
-  multithreaded design with scalable event notification systems such as
-  epoll and kqueue.
+**A HTTP benchmarking tool based mostly on wrk**
 
-  An optional LuaJIT script can perform HTTP request generation, response
-  processing, and custom reporting. Several example scripts are located in
-  scripts/
+wrk2 is wrk modifed to produce a constant throughput load, and
+accurate latency details to the high 9s (i.e. can produce
+accurate 99.9999%'ile when run long enough). In addition to
+wrk's arguments, wrk2 takes a throughput argument (in total requests
+per second) via either the --rate or -R parameters (default
+is 1000).
+
+CRITICAL NOTE: Before going farther, I'd like to make it clear that
+this work is in no way intended to be an attack on or a disparagement
+of the great work that Will Glozer has done with wrk. I enjoyed working
+with his code, and I sincerely hope that some of the changes I had made
+might be considered for inclusion back into wrk. As those of you who may
+be familiar with my latency related talks and rants, the latency
+measurement issues that I focused on fixing with wrk2 are extremely
+common in load generators and in monitoring code. I do not
+ascribe any lack of skill or intelligence to people who's creations
+repeat them. I was once (as recently as 2-3 years ago) just as
+oblivious to the effects of Coordinated Omission as the rest of
+the world still is.
+
+wrk2 replaces wrk's individual request sample buffers with
+HdrHistograms. wrk2 maintains wrk's Lua API, including it's
+presentation of the stats objects (latency and requests). The stats
+objects are "emulated" using HdrHistograms. E.g. a request for a
+raw sample value at index i (see latency[i] below) will return
+the value at the associated percentile (100.0 * i / __len).
+
+As a result of using HdrHistograms for full (lossless) recording,
+constant throughput load generation, and accurate tracking of
+response latency (from the point in time where a request was supposed
+to be sent per the "plan" to the time that it actually arrived), wrk2's
+latency reporting is significantly more accurate (as in "correct") than
+that of wrk's current (Nov. 2014) execution model.
+
+It is important to note that in wrk2's current constant-throughput
+implementation, measured latencies are [only] accurate to a +/- ~1 msec
+granularity, due to OS sleep time behavior.
+
+wrk2 is currently in experimental/development mode, and may well be
+merged into wrk in the future if others see fit to adopt it's changes.
+
+The remaining part of the README is wrk's, with minor changes to
+reflect additional parameter and output. There is an important and
+detailed note at the end about about wrk2's latency measurement
+technique, including a discussion of Coordinated Omission, how
+wrk2 avoids it, and detailed output that demonstrates it.
+
+wrk2 (as is wrk) is a modern HTTP benchmarking tool capable of generating
+significant load when run on a single multi-core CPU. It combines a
+multithreaded design with scalable event notification systems such as
+epoll and kqueue.
+
+An optional LuaJIT script can perform HTTP request generation, response
+processing, and custom reporting. Several example scripts are located in
+`scripts/`.
 
 ## Basic Usage
 
