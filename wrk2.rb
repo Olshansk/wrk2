@@ -14,14 +14,14 @@ class Wrk2 < Formula
     system "make", "clean"
     system "make", "deps/luajit/src/libluajit.a"
 
-    # Generate bytecode properly
+    # Create obj directory and generate bytecode properly
+    mkdir "obj" unless File.exist?("obj")
     cd "deps/luajit/src" do
       system "./luajit", "-b", "-n", "wrk", "-t", "c",
              buildpath/"src/wrk.lua", buildpath/"obj/bytecode.c"
     end
 
     # Compile bytecode
-    mkdir "obj" unless File.exist?("obj")
     system ENV.cc, "-c", "-o", "obj/bytecode.o", "obj/bytecode.c"
 
     # Build wrk2
