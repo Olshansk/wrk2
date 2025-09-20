@@ -1,6 +1,6 @@
 CFLAGS  := -std=c99 -Wall -O2 -D_REENTRANT
 LIBS    := -lpthread -lm -lcrypto -lssl
-OPENSSL_LIB	:= /usr/local/opt/openssl/
+OPENSSL_LIB	:= /opt/homebrew/opt/openssl@3
 
 TARGET  := $(shell uname -s | tr '[A-Z]' '[a-z]' 2>/dev/null || echo unknown)
 

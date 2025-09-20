@@ -1,5 +1,7 @@
 # wrk2
-[![Build Status](https://travis-ci.com/giltene/wrk2.svg?branch=master)](https://travis-ci.com/giltene/wrk2) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/giltene/wrk2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+> ![Note]
+> This is a fork of [wrk2](https://github.com/giltene/wrk2) that works on macOS and has a better README.
 
 ## QuickStart
 
@@ -55,7 +57,7 @@ HdrHistograms. wrk2 maintains wrk's Lua API, including it's
 presentation of the stats objects (latency and requests). The stats
 objects are "emulated" using HdrHistograms. E.g. a request for a
 raw sample value at index i (see latency[i] below) will return
-the value at the associated percentile (100.0 * i / __len).
+the value at the associated percentile (100.0 \* i / \_\_len).
 
 As a result of using HdrHistograms for full (lossless) recording,
 constant throughput load generation, and accurate tracking of
@@ -90,15 +92,15 @@ processing, and custom reporting. Several example scripts are located in
 
     wrk -t2 -c100 -d30s -R2000 http://127.0.0.1:8080/index.html
 
-  This runs a benchmark for 30 seconds, using 2 threads, keeping
-  100 HTTP connections open, and a constant throughput of 2000 requests
-  per second (total, across all connections combined).
+This runs a benchmark for 30 seconds, using 2 threads, keeping
+100 HTTP connections open, and a constant throughput of 2000 requests
+per second (total, across all connections combined).
 
-  [It's important to note that wrk2 extends the initial calibration
-   period to 10 seconds (from wrk's 0.5 second), so runs shorter than
-   10-20 seconds may not present useful information]
+[It's important to note that wrk2 extends the initial calibration
+period to 10 seconds (from wrk's 0.5 second), so runs shorter than
+10-20 seconds may not present useful information]
 
-  Output:
+Output:
 
     Running 30s test @ http://127.0.0.1:80/index.html
       2 threads and 100 connections
@@ -111,14 +113,14 @@ processing, and custom reporting. Several example scripts are located in
     Requests/sec:   2000.15
     Transfer/sec:    676.14KB
 
-  However, wrk2 will usually be run with the --latency flag, which provides
-  detailed latency percentile information (in a format that can be easily
-  imported to spreadsheets or gnuplot scripts and plotted per examples
-  provided at http://hdrhistogram.org):
+However, wrk2 will usually be run with the --latency flag, which provides
+detailed latency percentile information (in a format that can be easily
+imported to spreadsheets or gnuplot scripts and plotted per examples
+provided at http://hdrhistogram.org):
 
     wrk -t2 -c100 -d30s -R2000 --latency http://127.0.0.1:80/index.html
 
-  Output:
+Output:
 
     Running 30s test @ http://127.0.0.1:80/index.html
       2 threads and 100 connections
@@ -136,11 +138,11 @@ processing, and custom reporting. Several example scripts are located in
      99.990%   12.45ms
      99.999%   12.50ms
     100.000%   12.50ms
-  
+
     Detailed Percentile spectrum:
          Value   Percentile   TotalCount 1/(1-Percentile)
-         
-         0.921     0.000000            1         1.00 
+
+         0.921     0.000000            1         1.00
          4.053     0.100000         3951         1.11
          4.935     0.200000         7921         1.25
          5.627     0.300000        11858         1.43
@@ -227,10 +229,9 @@ processing, and custom reporting. Several example scripts are located in
     Requests/sec:   2000.28
     Transfer/sec:    676.18KB
 
-
 ## Scripting
 
-  wrk's public Lua API is:
+wrk's public Lua API is:
 
     init     = function(args)
     request  = function()
@@ -257,14 +258,14 @@ processing, and custom reporting. Several example scripts are located in
     global response -- optional function called with HTTP response data
     global done     -- optional function called with results of run
 
-  The init() function receives any extra command line arguments for the
-  script. Script arguments must be separated from wrk arguments with "--"
-  and scripts that override init() but not request() must call wrk.init()
+The init() function receives any extra command line arguments for the
+script. Script arguments must be separated from wrk arguments with "--"
+and scripts that override init() but not request() must call wrk.init()
 
-  The done() function receives a table containing result data, and two
-  statistics objects representing the sampled per-request latency and
-  per-thread request rate. Duration and latency are microsecond values
-  and rate is measured in requests per second.
+The done() function receives a table containing result data, and two
+statistics objects representing the sampled per-request latency and
+per-thread request rate. Duration and latency are microsecond values
+and rate is measured in requests per second.
 
     latency.min              -- minimum value seen
     latency.max              -- maximum value seen
@@ -288,119 +289,120 @@ processing, and custom reporting. Several example scripts are located in
 
 ## Benchmarking Tips
 
-  The machine running wrk must have a sufficient number of ephemeral ports
-  available and closed sockets should be recycled quickly. To handle the
-  initial connection burst the server's listen(2) backlog should be greater
-  than the number of concurrent connections being tested.
+The machine running wrk must have a sufficient number of ephemeral ports
+available and closed sockets should be recycled quickly. To handle the
+initial connection burst the server's listen(2) backlog should be greater
+than the number of concurrent connections being tested.
 
-  A user script that only changes the HTTP method, path, adds headers or
-  a body, will have no performance impact. If multiple HTTP requests are
-  necessary they should be pre-generated and returned via a quick lookup in
-  the request() call. Per-request actions, particularly building a new HTTP
-  request, and use of response() will necessarily reduce the amount of load
-  that can be generated.
+A user script that only changes the HTTP method, path, adds headers or
+a body, will have no performance impact. If multiple HTTP requests are
+necessary they should be pre-generated and returned via a quick lookup in
+the request() call. Per-request actions, particularly building a new HTTP
+request, and use of response() will necessarily reduce the amount of load
+that can be generated.
 
 ## Acknowledgements
 
-  wrk2 is obviously based on wrk, and credit goes to wrk's authors for
-  pretty much everything.
+wrk2 is obviously based on wrk, and credit goes to wrk's authors for
+pretty much everything.
 
-  wrk2 uses my (Gil Tene's) HdrHistogram. Specifically, the C port written
-  by Mike Barker. Details can be found at http://hdrhistogram.org . Mike
-  also started the work on this wrk modification, but as he was stuck
-  on a plane ride to New Zealand, I picked it up and ran it to completion.
+wrk2 uses my (Gil Tene's) HdrHistogram. Specifically, the C port written
+by Mike Barker. Details can be found at http://hdrhistogram.org . Mike
+also started the work on this wrk modification, but as he was stuck
+on a plane ride to New Zealand, I picked it up and ran it to completion.
 
-  wrk contains code from a number of open source projects including the
-  'ae' event loop from redis, the nginx/joyent/node.js 'http-parser',
-  Mike Pall's LuaJIT, and the Tiny Mersenne Twister PRNG. Please consult
-  the NOTICE file for licensing details.
+wrk contains code from a number of open source projects including the
+'ae' event loop from redis, the nginx/joyent/node.js 'http-parser',
+Mike Pall's LuaJIT, and the Tiny Mersenne Twister PRNG. Please consult
+the NOTICE file for licensing details.
 
-************************************************************************
+---
 
 A note about wrk2's latency measurement technique:
 
-  One of wrk2's main modification to wrk's current (Nov. 2014) measurement
-  model has to do with how request latency is computed and recorded.
+One of wrk2's main modification to wrk's current (Nov. 2014) measurement
+model has to do with how request latency is computed and recorded.
 
-  wrk's model, which is similar to the model found in many current load
-  generators, computes the latency for a given request as the time from
-  the sending of the first byte of the request to the time the complete
-  response was received.
+wrk's model, which is similar to the model found in many current load
+generators, computes the latency for a given request as the time from
+the sending of the first byte of the request to the time the complete
+response was received.
 
-  While this model correctly measures the actual completion time of
-  individual requests, it exhibits a strong Coordinated Omission effect,
-  through which most of the high latency artifacts exhibited by the
-  measured server will be ignored. Since each connection will only
-  begin to send a request after receiving a response, high latency
-  responses result in the load generator coordinating with the server
-  to avoid measurement during high latency periods.
+While this model correctly measures the actual completion time of
+individual requests, it exhibits a strong Coordinated Omission effect,
+through which most of the high latency artifacts exhibited by the
+measured server will be ignored. Since each connection will only
+begin to send a request after receiving a response, high latency
+responses result in the load generator coordinating with the server
+to avoid measurement during high latency periods.
 
-  There are various mechanisms by which Coordinated Omission can be
-  corrected or compensated for. For example, HdrHistogram includes
-  a simple way to compensate for Coordinated Omission when a known
-  expected interval between measurements exists. Alternatively, some
-  completely asynchronous load generators can avoid Coordinated
-  Omission by sending requests without waiting for previous responses
-  to arrive. However, this (asynchronous) technique is normally only
-  effective with non-blocking protocols or single-request-per-connection
-  workloads. When the application being measured may involve mutiple
-  serial request/response interactions within each connection, or a
-  blocking protocol (as is the case with most TCP and HTTP workloads),
-  this completely asynchronous behavior is usually not a viable option.
+There are various mechanisms by which Coordinated Omission can be
+corrected or compensated for. For example, HdrHistogram includes
+a simple way to compensate for Coordinated Omission when a known
+expected interval between measurements exists. Alternatively, some
+completely asynchronous load generators can avoid Coordinated
+Omission by sending requests without waiting for previous responses
+to arrive. However, this (asynchronous) technique is normally only
+effective with non-blocking protocols or single-request-per-connection
+workloads. When the application being measured may involve mutiple
+serial request/response interactions within each connection, or a
+blocking protocol (as is the case with most TCP and HTTP workloads),
+this completely asynchronous behavior is usually not a viable option.
 
-  The model I chose for avoiding Coordinated Omission in wrk2 combines
-  the use of constant throughput load generation with latency
-  measurement that takes the intended constant throughput into account.
-  Rather than measure response latency from the time that the actual
-  transmission of a request occurred, wrk2 measures response latency
-  from the time the transmission *should* have occurred according to the
-  constant throughput configured for the run. When responses take longer
-  than normal (arriving later than the next request should have been sent),
-  the true latency of the subsequent requests will be appropriately
-  reflected in the recorded latency stats.
+The model I chose for avoiding Coordinated Omission in wrk2 combines
+the use of constant throughput load generation with latency
+measurement that takes the intended constant throughput into account.
+Rather than measure response latency from the time that the actual
+transmission of a request occurred, wrk2 measures response latency
+from the time the transmission _should_ have occurred according to the
+constant throughput configured for the run. When responses take longer
+than normal (arriving later than the next request should have been sent),
+the true latency of the subsequent requests will be appropriately
+reflected in the recorded latency stats.
 
-  Note: This technique can be applied to variable throughput loaders.
-        It requires a "model" or "plan" that can provide the intended
-        start time if each request. Constant throughput load generators
-        Make this trivial to model. More complicated schemes (such as
-        varying throughput or stochastic arrival models) would likely
-        require a detailed model and some memory to provide this
-        information.
+Note: This technique can be applied to variable throughput loaders.
+It requires a "model" or "plan" that can provide the intended
+start time if each request. Constant throughput load generators
+Make this trivial to model. More complicated schemes (such as
+varying throughput or stochastic arrival models) would likely
+require a detailed model and some memory to provide this
+information.
 
-  In order to demonstrate the significant difference between the two
-  latency recording techniques, wrk2 also tracks an internal "uncorrected
-  latency histogram" that can be reported on using the --u_latency flag.
-  The following chart depicts the differences between the correct and
-  the "uncorrected" percentile distributions measured during wrk2 runs.
-  (The "uncorrected" distributions are labeled with "CO", for Coordinated
-  Omission)
-  
-  ![CO example]
-  
-  These differences can be seen in detail in the output provided when 
-  the --u_latency flag is used. For example, the output below demonstrates
-  the difference in recorded latency distribution for two runs:
+In order to demonstrate the significant difference between the two
+latency recording techniques, wrk2 also tracks an internal "uncorrected
+latency histogram" that can be reported on using the --u_latency flag.
+The following chart depicts the differences between the correct and
+the "uncorrected" percentile distributions measured during wrk2 runs.
+(The "uncorrected" distributions are labeled with "CO", for Coordinated
+Omission)
 
-  The first ["Example 1" below] is a relatively "quiet" run with no large
-  outliers (the worst case seen was 11msec), and even wit the 99'%ile exhibit
-  a ~2x ratio between wrk2's latency measurement and that of an uncorrected
-  latency scheme.
+![CO example]
 
-  The second run ["Example 2" below] includes a single small (1.4sec)
-  disruption (introduced using ^Z on the apache process for simple effect).
-  As can be seen in the output, there is a dramatic difference between the
-  reported percentiles in the two measurement techniques, with wrk2's latency
-  report [correctly] reporting a 99%'ile that is 200x (!!!) larger than that
-  of the traditional measurement technique that was susceptible to Coordinated
-  Omission.
+These differences can be seen in detail in the output provided when
+the --u_latency flag is used. For example, the output below demonstrates
+the difference in recorded latency distribution for two runs:
 
-************************************************************************
-************************************************************************
+The first ["Example 1" below] is a relatively "quiet" run with no large
+outliers (the worst case seen was 11msec), and even wit the 99'%ile exhibit
+a ~2x ratio between wrk2's latency measurement and that of an uncorrected
+latency scheme.
+
+The second run ["Example 2" below] includes a single small (1.4sec)
+disruption (introduced using ^Z on the apache process for simple effect).
+As can be seen in the output, there is a dramatic difference between the
+reported percentiles in the two measurement techniques, with wrk2's latency
+report [correctly] reporting a 99%'ile that is 200x (!!!) larger than that
+of the traditional measurement technique that was susceptible to Coordinated
+Omission.
+
+---
+
+---
 
 Example 1: [short, non-noisy run (~11msec worst observed latency)]:
 
     wrk -t2 -c100 -d30s -R2000 --u_latency http://127.0.0.1:80/index.html
- 
+
     Running 30s test @ http://127.0.0.1:80/index.html
       2 threads and 100 connections
       Thread calibration: mean lat.: 9319 usec, rate sampling interval: 21 msec
@@ -417,10 +419,10 @@ Example 1: [short, non-noisy run (~11msec worst observed latency)]:
      99.990%   11.29ms
      99.999%   11.32ms
     100.000%   11.32ms
-   
+
       Detailed Percentile spectrum:
            Value   Percentile   TotalCount 1/(1-Percentile)
- 
+
            0.677     0.000000            1         1.00
            3.783     0.100000         3952         1.11
            4.643     0.200000         7924         1.25
@@ -504,9 +506,9 @@ Example 1: [short, non-noisy run (~11msec worst observed latency)]:
     #[Max     =       11.312, Total count    =        39500]
     #[Buckets =           27, SubBuckets     =         2048]
     ----------------------------------------------------------
- 
+
       Latency Distribution (HdrHistogram - Uncorrected Latency (measured without taking delayed starts into account))
-     50.000%    2.68ms 
+     50.000%    2.68ms
      75.000%    3.71ms
      90.000%    4.47ms
      99.000%    5.43ms
@@ -514,10 +516,10 @@ Example 1: [short, non-noisy run (~11msec worst observed latency)]:
      99.990%    6.99ms
      99.999%    7.01ms
     100.000%    7.01ms
- 
+
       Detailed Percentile spectrum:
            Value   Percentile   TotalCount 1/(1-Percentile)
- 
+
            0.264     0.000000            1         1.00
            1.111     0.100000         3954         1.11
            1.589     0.200000         7909         1.25
@@ -580,7 +582,7 @@ Example 1: [short, non-noisy run (~11msec worst observed latency)]:
            6.951     0.999707        39489      3413.33
            6.979     0.999756        39491      4096.00
            6.983     0.999780        39494      4551.11
-           6.983     0.999805        39494      5120.00  
+           6.983     0.999805        39494      5120.00
            6.983     0.999829        39494      5851.43
            6.987     0.999854        39496      6826.67
            6.987     0.999878        39496      8192.00
@@ -605,14 +607,14 @@ Example 1: [short, non-noisy run (~11msec worst observed latency)]:
     Requests/sec:   2000.67
     Transfer/sec:    676.32KB
 
+---
 
-************************************************************************
-************************************************************************
+---
 
 Example 2: [1.4 second ^Z artifact introduced on the httpd server]:
- 
+
     wrk -t2 -c100 -d30s -R2000 --u_latency http://127.0.0.1:80/index.html
- 
+
     Running 30s test @ http://127.0.0.1:80/index.html
       2 threads and 100 connections
       Thread calibration: mean lat.: 108237 usec, rate sampling interval: 1021 msec
@@ -629,10 +631,10 @@ Example 2: [1.4 second ^Z artifact introduced on the httpd server]:
      99.990%    1.42s
      99.999%    1.42s
     100.000%    1.42s
- 
+
       Detailed Percentile spectrum:
            Value   Percentile   TotalCount 1/(1-Percentile)
- 
+
            1.317     0.000000            1         1.00
            5.011     0.100000         3954         1.11
            6.215     0.200000         7903         1.25
@@ -714,9 +716,9 @@ Example 2: [1.4 second ^Z artifact introduced on the httpd server]:
            4.423     0.850000        33599         6.67
            4.587     0.875000        34564         8.00
            4.735     0.887500        35057         8.89
-           4.871     0.900000        35560        10.00 
+           4.871     0.900000        35560        10.00
            4.975     0.912500        36051        11.43
-           5.063     0.925000        36543        13.33 
+           5.063     0.925000        36543        13.33
            5.143     0.937500        37039        16.00
            5.187     0.943750        37282        17.78
            5.239     0.950000        37533        20.00
@@ -752,4 +754,4 @@ Example 2: [1.4 second ^Z artifact introduced on the httpd server]:
     Requests/sec:   2001.42
     Transfer/sec:    676.57KB
 
-[CO example]:https://raw.github.com/giltene/wrk2/master/CoordinatedOmission/wrk2_CleanVsCO.png "Coordinated Omission example"
+[CO example]: https://raw.github.com/giltene/wrk2/master/CoordinatedOmission/wrk2_CleanVsCO.png "Coordinated Omission example"
